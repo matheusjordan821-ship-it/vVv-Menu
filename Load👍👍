@@ -1,1 +1,165 @@
+-- [[ Team vVv Hub - Full Integrated System ]]
 
+local Player = game.Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+
+-- Criando a ScreenGui Principal
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Team_vVv_Hub"
+ScreenGui.Parent = CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Função de Arredondamento (UICorner)
+local function AddCorner(parent, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, radius or 8)
+    corner.Parent = parent
+end
+
+--- ==========================================
+--- 1. INTERFACE DO MENU (TEAM vVv HUB)
+--- ==========================================
+local Main = Instance.new("Frame")
+Main.Name = "MainFrame"
+Main.Size = UDim2.new(0, 500, 0, 300)
+Main.Position = UDim2.new(0.5, -250, 0.5, -150)
+Main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Main.Visible = false -- COMEÇA ESCONDIDO
+Main.Active = true
+Main.Draggable = true
+Main.Parent = ScreenGui
+AddCorner(Main, 10)
+
+-- Barra Lateral (Tablet Style)
+local SideBar = Instance.new("Frame")
+SideBar.Size = UDim2.new(0, 120, 1, 0)
+SideBar.BackgroundColor3 = Color3.fromRGB(45, 0, 120) -- Roxo vVv
+SideBar.Parent = Main
+AddCorner(SideBar, 10)
+
+local SideLayout = Instance.new("UIListLayout", SideBar)
+SideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+SideLayout.Padding = UDim.new(0, 5)
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 45)
+Title.Text = "vVv HUB"
+Title.TextColor3 = Color3.white
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 18
+Title.BackgroundTransparency = 1
+Title.Parent = SideBar
+
+-- Container de Páginas
+local PageContainer = Instance.new("Frame")
+PageContainer.Size = UDim2.new(1, -130, 1, -10)
+PageContainer.Position = UDim2.new(0, 125, 0, 5)
+PageContainer.BackgroundTransparency = 1
+PageContainer.Parent = Main
+
+local Pages = {}
+
+-- Função para Criar Abas
+local function CreateTab(name)
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Size = UDim2.new(0.9, 0, 0, 35)
+    TabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TabBtn.Text = name
+    TabBtn.TextColor3 = Color3.white
+    TabBtn.Font = Enum.Font.Gotham
+    TabBtn.Parent = SideBar
+    AddCorner(TabBtn, 5)
+
+    local Page = Instance.new("ScrollingFrame")
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.Visible = false
+    Page.ScrollBarThickness = 0
+    Page.Parent = PageContainer
+    Instance.new("UIListLayout", Page).Padding = UDim.new(0, 5)
+
+    TabBtn.MouseButton1Click:Connect(function()
+        for _, p in pairs(Pages) do p.Visible = false end
+        Page.Visible = true
+    end)
+
+    table.insert(Pages, Page)
+    return Page
+end
+
+-- Criando as Abas
+local MainTab = CreateTab("Movement")
+local VisualTab = CreateTab("Visuals")
+
+-- Função para criar botões dentro das abas
+local function CreateButton(parent, text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -10, 0, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.Text = text
+    btn.TextColor3 = Color3.white
+    btn.Font = Enum.Font.Gotham
+    btn.Parent = parent
+    AddCorner(btn, 5)
+    btn.MouseButton1Click:Connect(callback)
+end
+
+-- Adicionando funções
+CreateButton(MainTab, "Speed 100", function() Player.Character.Humanoid.WalkSpeed = 100 end)
+CreateButton(VisualTab, "Night Mode", function() game.Lighting.ClockTime = 0 end)
+
+Pages[1].Visible = true -- Mostra a primeira aba por padrão
+
+--- ==========================================
+--- 2. SISTEMA DE CHAVE (KEY SYSTEM)
+--- ==========================================
+local KeyFrame = Instance.new("Frame")
+KeyFrame.Name = "KeySystem"
+KeyFrame.Size = UDim2.new(0, 300, 0, 180)
+KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+KeyFrame.Parent = ScreenGui
+AddCorner(KeyFrame, 10)
+
+local KeyTitle = Instance.new("TextLabel")
+KeyTitle.Size = UDim2.new(1, 0, 0, 40)
+KeyTitle.Text = "vVv HUB | LOGIN"
+KeyTitle.TextColor3 = Color3.white
+KeyTitle.Font = Enum.Font.GothamBold
+KeyTitle.BackgroundTransparency = 1
+KeyTitle.Parent = KeyFrame
+
+local KeyInput = Instance.new("TextBox")
+KeyInput.Size = UDim2.new(0.8, 0, 0, 35)
+KeyInput.Position = UDim2.new(0.1, 0, 0.4, 0)
+KeyInput.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+KeyInput.PlaceholderText = "Enter Key..."
+KeyInput.Text = ""
+KeyInput.TextColor3 = Color3.white
+KeyInput.Parent = KeyFrame
+AddCorner(KeyInput, 5)
+
+local VerifyBtn = Instance.new("TextButton")
+VerifyBtn.Size = UDim2.new(0.8, 0, 0, 35)
+VerifyBtn.Position = UDim2.new(0.1, 0, 0.7, 0)
+VerifyBtn.BackgroundColor3 = Color3.fromRGB(45, 0, 120)
+VerifyBtn.Text = "Verify Access"
+VerifyBtn.TextColor3 = Color3.white
+VerifyBtn.Font = Enum.Font.GothamBold
+VerifyBtn.Parent = KeyFrame
+AddCorner(VerifyBtn, 5)
+
+-- LÓGICA DE VERIFICAÇÃO
+VerifyBtn.MouseButton1Click:Connect(function()
+    -- ALTERE A CHAVE ABAIXO
+    if KeyInput.Text == "vVv Key" then 
+        KeyFrame.Visible = false -- Esconde o login
+        Main.Visible = true      -- Mostra o Menu Principal
+        print("Acesso Liberado!")
+    else
+        KeyInput.Text = ""
+        KeyInput.PlaceholderText = "WRONG KEY!"
+        KeyInput.PlaceholderColor3 = Color3.fromRGB(255, 0, 0)
+    end
+end)
